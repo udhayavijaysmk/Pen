@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		document.getElementById("adddiv").hidden = true;
+
+		getAllItems();
+		
+		$("#addbtn").click(function() {
+			document.getElementById("addbtn").hidden = true;
+			document.getElementById("adddiv").hidden = false;
+		});
+
+		$("#cancelbtn").click(function() {
+			document.getElementById("addpen").value = "";
+			document.getElementById("addcategory").value = "";
+			document.getElementById("adddiv").hidden = true;
+			document.getElementById("addbtn").hidden = false;
+		});
+		
+		$.ajax({
+			type:"GET",
+	        contentType: "application/json",
+	        url:"http://localhost:8080/getall",
+	        success: function(data) {
+	          var users = JSON.parse(JSON.stringify(data));
+	          for (var i in users) {
+	              $("tbody").append("<tr> \
+	                          <td>" +  users[i].id + "</td> \
+	                          <td>" +  users[i].city + "</td> \
+	                          <td>" +  users[i].special + "</td> \
+	                          <td> \ <button id='edit'>Edit</button> \
+	                          <button id='delete'>Delete</button> \
+	                           </td> \
+	              </tr>");
+	          }
+	        },
+	        error: function(data) { 
+	          console.log(data);
+	        }
+		});
+		var jsonPen = {};
+
+		$("#savebtn").click(function() {
+
+			jsonPen.name = $('#addpen').val();
+			jsonPen.category = $('#addcategory').val();
+			var PenObj = JSON.stringify(jsonPen);
+
+			$.ajax({
+				url : "http://localhost:8080/insert",
+				method : "POST",
+
+				data : PenObj,
+				contentType : "application/json",
+				success : function() {
+					alert("Data Saved Successfully");
+				},
+				error : function(err) {
+					console.log(err);
+					alert("error");
+				}
+			});
+		});
+		
+		function getAllItems(){
+			$.ajax({
+				type:"GET",
+		        contentType: "application/json",
+		        url:"http://localhost:8080/getall",
+		        success: function(data) {
+		          var users = JSON.parse(JSON.stringify(data));
+		          for (var i in users) {
+		              $("tbody").append("<tr> \
+		                          <td>" +  users[i].id + "</td> \
+		                          <td>" +  users[i].city + "</td> \
+		                          <td>" +  users[i].special + "</td> \
+		                          <td> \ <button id='edit'>Edit</button> \
+		                          <button id='delete'>Delete</button> \
+		                           </td> \
+		              </tr>");
+		          }
+		        },
+		        error: function(data) { 
+		          console.log(data);
+		        }
+			});
+		}
+	});
+</script>
+</head>
+<body>
+	<h1>Welcome to Spring-Boot Example (Pen).</h1>
+	<table id="tablepen">
+		<tr>
+			<th>ID</th>
+			<th>Pen Name</th>
+			<th>Category</th>
+		</tr>
+	</table>
+	<br>
+	<br>
+	<input type="button" id="addbtn" value="Add">
+	<br>
+	<br>
+	<div id="adddiv">
+		Pen Name : <input type="text" id="addpen"> <br> <br>
+		Category : <input type="text" id="addcategory"> <br> <br>
+		<input type="button" id="savebtn" value="Save"> <input
+			type="button" id="cancelbtn" value="Cancel">
+	</div>
+</body>
+</html>
