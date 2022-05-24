@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +24,11 @@ public class PenController {
 	@RequestMapping(value="/")
 	public String Show(){
 		return "index";
+	}
+	
+	@GetMapping(value="/getName")
+	public ResponseEntity<String> getName(@RequestParam("name") String name) {
+		return new ResponseEntity<>(name, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/all")
